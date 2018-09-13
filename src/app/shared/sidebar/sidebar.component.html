@@ -34,14 +34,14 @@
         </li>
 
         <li class="nav-item" routerLink="/detalle">
-            <a class="nav-link">
+            <a class="nav-link cursor">
                 <i class="menu-icon fa fa-table"></i>
                 <span class="menu-title">Detalle</span>
             </a>
         </li>
 
-        <li class="nav-item" routerLink="/login">
-            <a class="nav-link cursor">
+        <li class="nav-item">
+            <a (click)="logOut()" class="nav-link cursor">
                 <i class="menu-icon fa fa-sign-out-alt"></i>
                 <span class="menu-title">Cerrar sesión</span>
             </a>

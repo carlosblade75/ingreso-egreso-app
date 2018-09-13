@@ -11,6 +11,6 @@ import { DashboardComponent } from './dashboard.component';
 export const dashboardRoutes: Routes = [
     { path: 'detalle', component: DetalleComponent},
     { path: 'ingesoegreso', component: IngresoEgresoComponent},
-    { path: '', component: EstadisticaComponent},
+    { path: '', component: EstadisticaComponent}
 
 ];
