@@ -10,25 +10,52 @@ import { map } from 'rxjs/operators';
 import { User } from '../user.model';
 import { AngularFirestore } from '@angular/fire/firestore';
 
+import { Store } from '@ngrx/store';
+import { AppStore } from '../app.reducer';
+import { ActivarLoadingAction, DesactivarLoadingAction } from '../shared/ui.actions';
+import { SetUserAction } from './auth.actions';
+import { Subscription } from 'rxjs';
+
 @Injectable({
   providedIn: 'root' // esto significa que el servicio es global y no hace falta importarlo en el appmodule en providers
 })
 export class AuthService {
 
+  private userSubscription: Subscription;
+
   constructor(private afAuth: AngularFireAuth,
               private router: Router,
-              private afDB: AngularFirestore) { }
+              private afDB: AngularFirestore,
+              private store: Store<AppStore>) { }
 
   initAuthListener() {
 
     this.afAuth.authState.subscribe ( ( fbUser: firebase.User ) => {
 
-      console.log('logado:', fbUser);
+      if (fbUser) {
+        this.userSubscription = this.afDB.doc(`${ fbUser.uid}/usuario`).valueChanges()
+        .subscribe( (usuarioObj: any) => {
+
+          const newUser = new User(usuarioObj);
+
+          this.store.dispatch(new SetUserAction(newUser));
+
+        });
+      } else {
+        // hacemos esto para que cuadno haya un logout no recibamos mas notificacios del observable para ese usuario uid en concreto
+        if (this.userSubscription) {
+          this.userSubscription.unsubscribe();
+        }
+      }
 
     });
   }
 
   crearUsuario( nombre: string, email: string, password: string) {
+
+    const activarLoading = new ActivarLoadingAction();
+
+    this.store.dispatch(activarLoading);
 
     this.afAuth.auth.createUserWithEmailAndPassword(email, password)
     .then ( resp => {
@@ -43,6 +70,10 @@ export class AuthService {
       .set( user )
       .then ( () => {
 
+        const desactivarLoading = new DesactivarLoadingAction();
+
+        this.store.dispatch(desactivarLoading);
+
         this.router.navigate(['/dashboard']);
 
       });
@@ -53,7 +84,7 @@ export class AuthService {
     .catch( error => {
 
       console.error(error);
-
+      this.store.dispatch(new DesactivarLoadingAction());
       Swal('Error en el login', error.message, 'error');
 
     });
@@ -61,17 +92,21 @@ export class AuthService {
 
   login (email: string, password: string) {
 
+    this.store.dispatch(new ActivarLoadingAction());
+
     this.afAuth.auth.signInWithEmailAndPassword( email, password)
     .then ( resp => {
 
       // console.log(resp);
+      this.store.dispatch(new DesactivarLoadingAction());
+
       this.router.navigate(['/dashboard']);
 
     })
     .catch( error => {
 
       console.error(error);
-
+      this.store.dispatch(new DesactivarLoadingAction());
       Swal('Error en el login', error.message, 'error');
 
     });

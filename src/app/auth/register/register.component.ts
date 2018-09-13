@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { Store } from '@ngrx/store';
+import { AppStore } from '../../app.reducer';
 
 @Component({
   selector: 'app-register',
@@ -9,9 +11,13 @@ import { AuthService } from '../auth.service';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  isLoading: boolean;
+
+  constructor(private authService: AuthService,
+              private store: Store<AppStore>) { }
 
   ngOnInit() {
+    this.store.select('ui').subscribe ( ui => this.isLoading = ui.isLoading);
   }
 
   onSubmit( data: any) {
