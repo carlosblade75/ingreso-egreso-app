@@ -10,8 +10,9 @@ import { Subscription } from 'rxjs';
   styles: []
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  
   isLoading: boolean;
-  subscription: Subscription;
+  subscription: Subscription = new Subscription();
 
   constructor(private authService: AuthService,
               private store: Store<AppStore>) { }
