@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AppStore } from '../../app.reducer';
+
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { IngresoEgreso } from '../ingres-egreso.model';
+
+import * as fromIngresoEgreso from '../ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-estadistica',
@@ -23,7 +25,7 @@ export class EstadisticaComponent implements OnInit {
 
   subscription: Subscription = new Subscription();
 
-  constructor( private store: Store<AppStore>) { }
+  constructor( private store: Store<fromIngresoEgreso.AppStore>) { }
 
   ngOnInit() {
 

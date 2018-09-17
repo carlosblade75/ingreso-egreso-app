@@ -1,8 +1,15 @@
 import { IngresoEgreso } from './ingres-egreso.model';
 import * as fromItem from './ingreso-egreso.actions';
 
+import { AppStore } from '../app.reducer';
+
 export interface IngresoEgresoState {
     items: IngresoEgreso[];
+}
+
+// hacemos una extensión de la AppStore
+export interface AppStore extends AppStore {
+    ingresoEgreso: IngresoEgresoState;
 }
 
 const initState: IngresoEgresoState = {

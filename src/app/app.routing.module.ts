@@ -12,10 +12,11 @@ const routes: Routes = [
 
     { path: 'login', component: LoginComponent},
     { path: 'register', component: RegisterComponent},
-    { path: '',
-      component: DashboardComponent,
-      children: dashboardRoutes,
-      canActivate: [AuthGuardService]
+    {
+        path: '',
+        loadChildren: './ingreso-egreso/ingreso-egreso.module#IngresoEgresoModule',
+        // no podemos usar el canActivate porque el modulo debe esta previamente cagado
+        canLoad: [ AuthGuardService ]
     },
     { path: '**', redirectTo: ''}
 ];
